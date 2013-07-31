@@ -970,7 +970,8 @@ struct msm_snapshot_pp_status
 #define CFG_START_STREAM              44
 #define CFG_STOP_STREAM               45
 #define CFG_GET_CSI_PARAMS            46
-#define CFG_MAX			47
+#define CFG_GET_AF_CALIB              47
+#define CFG_MAX			48
 
 #define MOVE_NEAR	0
 #define MOVE_FAR	1
@@ -1376,238 +1377,6 @@ struct csi_lane_params_t
 #define RDI_1 (0x01 << 3)
 #define RDI_2 (0x01 << 4)
 
-enum msm_ispif_vfe_intf
-{
-  VFE0,
-  VFE1,
-  VFE_MAX,
-};
-
-enum msm_ispif_intftype
-{
-  PIX0,
-  RDI0,
-  PIX1,
-  RDI1,
-  RDI2,
-  INTF_MAX,
-};
-
-enum msm_ispif_vc
-{
-  VC0,
-  VC1,
-  VC2,
-  VC3,
-};
-
-enum msm_ispif_cid
-{
-  CID0,
-  CID1,
-  CID2,
-  CID3,
-  CID4,
-  CID5,
-  CID6,
-  CID7,
-  CID8,
-  CID9,
-  CID10,
-  CID11,
-  CID12,
-  CID13,
-  CID14,
-  CID15,
-};
-
-struct msm_ispif_params
-{
-  uint8_t intftype;
-  uint16_t cid_mask;
-  uint8_t csid;
-  uint8_t vfe_intf;
-};
-
-struct msm_ispif_params_list
-{
-  uint32_t len;
-  struct msm_ispif_params params[4];
-};
-
-enum ispif_cfg_type_t
-{
-  ISPIF_INIT,
-  ISPIF_SET_CFG,
-  ISPIF_SET_ON_FRAME_BOUNDARY,
-  ISPIF_SET_OFF_FRAME_BOUNDARY,
-  ISPIF_SET_OFF_IMMEDIATELY,
-  ISPIF_RELEASE,
-};
-
-struct ispif_cfg_data
-{
-  enum ispif_cfg_type_t cfgtype;
-  union
-  {
-    uint32_t csid_version;
-    int cmd;
-    struct msm_ispif_params_list ispif_params;
-  } cfg;
-};
-
-struct sensor_cfg_data
-{
-  int cfgtype;
-  int mode;
-  int rs;
-  uint8_t max_steps;
-
-  union
-  {
-    int8_t effect;
-    uint8_t lens_shading;
-    uint16_t prevl_pf;
-    uint16_t prevp_pl;
-    uint16_t pictl_pf;
-    uint16_t pictp_pl;
-    uint32_t pict_max_exp_lc;
-    uint16_t p_fps;
-    uint8_t iso_type;
-    struct sensor_init_cfg init_info;
-    struct sensor_pict_fps gfps;
-    struct exp_gain_cfg exp_gain;
-    struct focus_cfg focus;
-    struct fps_cfg fps;
-    struct wb_info_cfg wb_info;
-    struct sensor_3d_exp_cfg sensor_3d_exp;
-    struct sensor_calib_data calib_info;
-    struct sensor_output_info_t output_info;
-    struct msm_eeprom_data_t eeprom_data;
-    struct csi_lane_params_t csi_lane_params;
-    /* QRD */
-    uint16_t antibanding;
-    uint8_t contrast;
-    uint8_t saturation;
-    uint8_t sharpness;
-    int8_t brightness;
-    int ae_mode;
-    uint8_t wb_val;
-    int8_t exp_compensation;
-    struct cord aec_cord;
-    int is_autoflash;
-    struct mirror_flip mirror_flip;
-  } cfg;
-};
-
-struct damping_params_t
-{
-  uint32_t damping_step;
-  uint32_t damping_delay;
-  uint32_t hw_params;
-};
-
-enum actuator_type
-{
-  ACTUATOR_VCM,
-  ACTUATOR_PIEZO,
-};
-
-enum msm_actuator_data_type
-{
-  MSM_ACTUATOR_BYTE_DATA = 1,
-  MSM_ACTUATOR_WORD_DATA,
-};
-
-enum msm_actuator_addr_type
-{
-  MSM_ACTUATOR_BYTE_ADDR = 1,
-  MSM_ACTUATOR_WORD_ADDR,
-};
-
-enum msm_actuator_write_type
-{
-  MSM_ACTUATOR_WRITE_HW_DAMP,
-  MSM_ACTUATOR_WRITE_DAC,
-};
-
-struct msm_actuator_reg_params_t
-{
-  enum msm_actuator_write_type reg_write_type;
-  uint32_t hw_mask;
-  uint16_t reg_addr;
-  uint16_t hw_shift;
-  uint16_t data_shift;
-};
-
-struct reg_settings_t
-{
-  uint16_t reg_addr;
-  uint16_t reg_data;
-};
-
-struct region_params_t
-{
-  /* [0] = ForwardDirection Macro boundary
-     [1] = ReverseDirection Inf boundary
-   */
-  uint16_t step_bound[2];
-  uint16_t code_per_step;
-};
-
-struct msm_actuator_move_params_t
-{
-  int8_t dir;
-  int8_t sign_dir;
-  int16_t dest_step_pos;
-  int32_t num_steps;
-  struct damping_params_t *ringing_params;
-};
-
-struct msm_actuator_tuning_params_t
-{
-  int16_t initial_code;
-  uint16_t pwd_step;
-  uint16_t region_size;
-  uint32_t total_steps;
-  struct region_params_t *region_params;
-};
-
-struct msm_actuator_params_t
-{
-  enum actuator_type act_type;
-  uint8_t reg_tbl_size;
-  uint16_t data_size;
-  uint16_t init_setting_size;
-  uint32_t i2c_addr;
-  enum msm_actuator_addr_type i2c_addr_type;
-  enum msm_actuator_data_type i2c_data_type;
-  struct msm_actuator_reg_params_t *reg_tbl_params;
-  struct reg_settings_t *init_settings;
-};
-
-struct msm_actuator_set_info_t
-{
-  struct msm_actuator_params_t actuator_params;
-  struct msm_actuator_tuning_params_t af_tuning_params;
-};
-
-struct msm_actuator_get_info_t
-{
-  uint32_t focal_length_num;
-  uint32_t focal_length_den;
-  uint32_t f_number_num;
-  uint32_t f_number_den;
-  uint32_t f_pix_num;
-  uint32_t f_pix_den;
-  uint32_t total_f_dist_num;
-  uint32_t total_f_dist_den;
-  uint32_t hor_view_angle_num;
-  uint32_t hor_view_angle_den;
-  uint32_t ver_view_angle_num;
-  uint32_t ver_view_angle_den;
-};
-
 enum af_camera_name
 {
   ACTUATOR_MAIN_CAM_0,
@@ -1620,6 +1389,97 @@ enum af_camera_name
   ACTUATOR_WEB_CAM_1,
   ACTUATOR_WEB_CAM_2,
 };
+
+enum actuator_type {
+	ACTUATOR_VCM,
+	ACTUATOR_PIEZO,
+};
+
+enum msm_actuator_data_type {
+	MSM_ACTUATOR_BYTE_DATA = 1,
+	MSM_ACTUATOR_WORD_DATA,
+};
+
+enum msm_actuator_addr_type {
+	MSM_ACTUATOR_BYTE_ADDR = 1,
+	MSM_ACTUATOR_WORD_ADDR,
+};
+
+enum msm_actuator_write_type {
+	MSM_ACTUATOR_WRITE_HW_DAMP,
+	MSM_ACTUATOR_WRITE_DAC,
+};
+
+struct msm_actuator_reg_params_t {
+	enum msm_actuator_write_type reg_write_type;
+	uint32_t hw_mask;
+	uint16_t reg_addr;
+	uint16_t hw_shift;
+	uint16_t data_shift;
+};
+
+struct reg_settings_t {
+	uint16_t reg_addr;
+	uint16_t reg_data;
+};
+
+struct region_params_t {
+	/* [0] = ForwardDirection Macro boundary
+	   [1] = ReverseDirection Inf boundary
+	 */
+	uint16_t step_bound[2];
+	uint16_t code_per_step;
+};
+
+struct msm_actuator_move_params_t {
+	int8_t dir;
+	int8_t sign_dir;
+	int16_t dest_step_pos;
+	int32_t num_steps;
+	struct damping_params_t *ringing_params;
+};
+
+struct msm_actuator_tuning_params_t {
+	int16_t initial_code;
+	uint16_t pwd_step;
+	uint16_t region_size;
+	uint32_t total_steps;
+	struct region_params_t *region_params;
+};
+
+struct msm_actuator_params_t {
+	enum actuator_type act_type;
+	uint8_t reg_tbl_size;
+	uint16_t data_size;
+	uint16_t init_setting_size;
+	uint32_t i2c_addr;
+	enum msm_actuator_addr_type i2c_addr_type;
+	enum msm_actuator_data_type i2c_data_type;
+	struct msm_actuator_reg_params_t *reg_tbl_params;
+	struct reg_settings_t *init_settings;
+};
+
+struct msm_actuator_set_info_t {
+	struct msm_actuator_params_t actuator_params;
+	struct msm_actuator_tuning_params_t af_tuning_params;
+};
+
+struct msm_actuator_get_info_t
+{
+	uint32_t focal_length_num;
+	uint32_t focal_length_den;
+	uint32_t f_number_num;
+	uint32_t f_number_den;
+	uint32_t f_pix_num;
+	uint32_t f_pix_den;
+	uint32_t total_f_dist_num;
+	uint32_t total_f_dist_den;
+	uint32_t hor_view_angle_num;
+	uint32_t hor_view_angle_den;
+	uint32_t ver_view_angle_num;
+	uint32_t ver_view_angle_den;
+};
+
 
 struct msm_actuator_cfg_data
 {
@@ -1647,21 +1507,6 @@ struct msm_calib_wb
   uint16_t r_over_g;
   uint16_t b_over_g;
   uint16_t gr_over_gb;
-};
-
-struct msm_calib_af
-{
-  uint16_t macro_dac;
-  uint16_t inf_dac;
-  uint16_t start_dac;
-};
-
-struct msm_calib_lsc
-{
-  uint16_t r_gain[221];
-  uint16_t b_gain[221];
-  uint16_t gr_gain[221];
-  uint16_t gb_gain[221];
 };
 
 struct pixel_t
@@ -1704,6 +1549,132 @@ struct sensor_large_data
   {
     struct sensor_3d_cali_data_t sensor_3d_cali_data;
   } data;
+};
+
+enum msm_ispif_vfe_intf {
+	VFE0,
+	VFE1,
+	VFE_MAX,
+};
+
+enum msm_ispif_intftype {
+	PIX0,
+	RDI0,
+	PIX1,
+	RDI1,
+	RDI2,
+	INTF_MAX,
+};
+
+enum msm_ispif_vc {
+	VC0,
+	VC1,
+	VC2,
+	VC3,
+};
+
+enum msm_ispif_cid {
+	CID0,
+	CID1,
+	CID2,
+	CID3,
+	CID4,
+	CID5,
+	CID6,
+	CID7,
+	CID8,
+	CID9,
+	CID10,
+	CID11,
+	CID12,
+	CID13,
+	CID14,
+	CID15,
+};
+
+struct msm_ispif_params {
+	uint8_t intftype;
+	uint16_t cid_mask;
+	uint8_t csid;
+	uint8_t vfe_intf;
+};
+
+struct msm_ispif_params_list {
+	uint32_t len;
+	struct msm_ispif_params params[4];
+};
+
+enum ispif_cfg_type_t {
+	ISPIF_INIT,
+	ISPIF_SET_CFG,
+	ISPIF_SET_ON_FRAME_BOUNDARY,
+	ISPIF_SET_OFF_FRAME_BOUNDARY,
+	ISPIF_SET_OFF_IMMEDIATELY,
+	ISPIF_RELEASE,
+};
+
+struct ispif_cfg_data {
+	enum ispif_cfg_type_t cfgtype;
+	union {
+		uint32_t csid_version;
+		int cmd;
+		struct msm_ispif_params_list ispif_params;
+	} cfg;
+};
+
+struct msm_calib_af {
+	uint16_t macro_dac;
+	uint16_t inf_dac;
+	uint16_t start_dac;
+};
+
+struct sensor_cfg_data {
+	int cfgtype;
+	int mode;
+	int rs;
+	uint8_t max_steps;
+
+	union {
+		int8_t effect;
+		uint8_t lens_shading;
+		uint16_t prevl_pf;
+		uint16_t prevp_pl;
+		uint16_t pictl_pf;
+		uint16_t pictp_pl;
+		uint32_t pict_max_exp_lc;
+		uint16_t p_fps;
+		uint8_t iso_type;
+		struct sensor_init_cfg init_info;
+		struct sensor_pict_fps gfps;
+		struct exp_gain_cfg exp_gain;
+		struct focus_cfg focus;
+		struct fps_cfg fps;
+		struct wb_info_cfg wb_info;
+		struct sensor_3d_exp_cfg sensor_3d_exp;
+		struct sensor_calib_data calib_info;
+		struct sensor_output_info_t output_info;
+		struct msm_eeprom_data_t eeprom_data;
+		struct csi_lane_params_t csi_lane_params;
+		struct msm_calib_af sensor_otp_afcalib;
+		/* QRD */
+		uint16_t antibanding;
+		uint8_t contrast;
+		uint8_t saturation;
+		uint8_t sharpness;
+		int8_t brightness;
+		int ae_mode;
+		uint8_t wb_val;
+		int8_t exp_compensation;
+		struct cord aec_cord;
+		int is_autoflash;
+		struct mirror_flip mirror_flip;
+	} cfg;
+};
+
+struct damping_params_t {
+	uint32_t damping_step;
+	uint32_t damping_delay;
+	uint32_t hw_params;
 };
 
 enum sensor_type_t
@@ -1755,6 +1726,13 @@ struct msm_mctl_node_info
   const char *mctl_node_name[MSM_MAX_CAMERA_SENSORS];
 };
 
+struct msm_calib_lsc {
+	uint16_t r_gain[221];
+	uint16_t b_gain[221];
+	uint16_t gr_gain[221];
+	uint16_t gb_gain[221];
+};
+
 struct flash_ctrl_data
 {
   int flashtype;
@@ -1773,22 +1751,22 @@ struct flash_ctrl_data
 #define GET_SNAPSHOT_FPS		5
 #define GET_SNAPSHOT_MAX_EP_LINE_CNT	6
 
-struct msm_camsensor_info
-{
-  char name[MAX_SENSOR_NAME];
-  uint8_t flash_enabled;
-  uint8_t strobe_flash_enabled;
-  uint8_t actuator_enabled;
-  uint8_t ispif_supported;
-  int8_t total_steps;
-  uint8_t support_3d;
-  enum flash_type flashtype;
-  enum sensor_type_t sensor_type;
-  uint32_t pxlcode;		/* enum v4l2_mbus_pixelcode */
-  uint32_t camera_type;		/* msm_camera_type */
-  int mount_angle;
-  uint32_t max_width;
-  uint32_t max_height;
+struct msm_camsensor_info {
+	char name[MAX_SENSOR_NAME];
+	uint8_t flash_enabled;
+	uint8_t strobe_flash_enabled;
+	uint8_t actuator_enabled;
+	uint8_t ispif_supported;
+	int8_t total_steps;
+	uint8_t support_3d;
+	enum flash_type flashtype;
+	enum sensor_type_t sensor_type;
+	uint32_t pxlcode;	/* enum v4l2_mbus_pixelcode */
+	uint32_t camera_type;	/* msm_camera_type */
+	int mount_angle;
+	uint32_t max_width;
+	uint32_t max_height;
+	char vendor_name[MAX_SENSOR_NAME];
 };
 
 #define V4L2_SINGLE_PLANE	0

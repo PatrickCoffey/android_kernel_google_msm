@@ -391,7 +391,7 @@ static struct anx7808_platform_data anx7808_pdata = {
 	.gpio_reset = GPIO_SLIMPORT_RESET_N,
 	.gpio_int = GPIO_SLIMPORT_INT_N,
 	.gpio_cbl_det = GPIO_SLIMPORT_CBL_DET,
-	.dvdd_power = anx7808_dvdd_onoff,
+	.switch_power = anx7808_dvdd_onoff,
 	.avdd_power = anx7808_avdd_onoff,
 };
 
