@@ -301,6 +301,9 @@ config FB_MSM_LCDC_TRULY_HVGA_IPS3P2335_PT_PANEL
         ---help---
         Support for LCDC Truly HVGA PT panel
 
+config FB_MSM_MIPI_LGIT_VIDEO_WXGA_PT_PANEL
+    bool "MIPI LG Display WXGA PT Panel"
+    select FB_MSM_MIPI_LGIT_VIDEO_WXGA_PT
 
 config FB_MSM_LCDC_SAMSUNG_OLED_PT
 	bool
@@ -323,6 +326,11 @@ config FB_MSM_MIPI_LGIT_VIDEO_WXGA_PT
 	default n
 
 config FB_MSM_LVDS_CHIMEI_WXGA
+	bool
+	select FB_MSM_LVDS
+	default n
+
+config FB_MSM_LVDS_FRC_FHD
 	bool
 	select FB_MSM_LVDS
 	default n

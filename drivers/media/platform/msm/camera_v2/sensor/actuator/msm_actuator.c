@@ -570,6 +570,7 @@ act_cal_fail:
 	return rc;
 }
 
+#else
 int32_t msm_actuator_i2c_read_b_eeprom(struct msm_camera_i2c_client *dev_client,
             unsigned char saddr, unsigned char *rxdata)
 {

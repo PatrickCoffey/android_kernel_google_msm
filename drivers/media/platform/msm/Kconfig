@@ -26,7 +26,6 @@ endif # MSM_CAMERA
 menuconfig MSMB_CAMERA
         bool "Qualcomm MSM camera and video capture 2.0 support"
         depends on ARCH_MSM && VIDEO_V4L2 && I2C
-        default n
         ---help---
           Say Y here to enable selecting the video adapters for
           Qualcomm msm camera and video capture 2.0, enabling this
@@ -36,7 +35,6 @@ menuconfig MSMB_CAMERA
 config MSMB_CAMERA_DEBUG
         bool "Qualcomm MSM camera 2.0 debugging with printk"
         depends on MSMB_CAMERA
-        default n
         ---help---
           Enable printk() debug for msm camera 2.0
 
