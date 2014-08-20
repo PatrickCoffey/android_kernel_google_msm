@@ -376,7 +376,8 @@ KBUILD_CFLAGS   := -Wall -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks -Wno-unused \
-		   -Wno-uninitialized -Wno-array-bounds
+		   -Wno-uninitialized -Wno-array-bounds \
+		   -Wno-sizeof-pointer-memaccess
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
